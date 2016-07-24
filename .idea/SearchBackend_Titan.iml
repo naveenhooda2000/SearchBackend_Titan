@@ -2,11 +2,11 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/EchoHandler.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/EchoServer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/cmake/FindFolly.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server-engine/src/SearchHandler.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server-engine/src/SearchServer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server-engine/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/EchoHandler.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cmake_config/FindFolly.cmake" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">

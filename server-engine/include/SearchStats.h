@@ -9,25 +9,28 @@
  */
 #pragma once
 
-namespace EchoService {
+namespace SearchService {
 
 /**
  * Just some dummy class containing request count. Since we keep
  * one instance of this in each class, there is no need of
  * synchronization
  */
-class EchoStats {
+class SearchStats {
  public:
-  virtual ~EchoStats() {
+  virtual ~SearchStats() {
+
   }
 
   // NOTE: We make the following methods `virtual` so that we can
-  //       mock them using Gmock for our C++ unit-tests. EchoStats
+  //       mock them using Gmock for our C++ unit-tests. SearchStats
   //       is an external dependency to handler and we should be
   //       able to mock it.
 
   virtual void recordRequest() {
+    std::cout << " recording request " << reqCount_ << std::endl;
     ++reqCount_;
+    std::cout << "icremented recording request " << reqCount_ << std::endl;
   }
 
   virtual uint64_t getRequestCount() {

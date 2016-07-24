@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2016, Facebook, Inc.
+ *  Copyright (c) 2016.
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
@@ -15,10 +15,10 @@
 #include <proxygen/httpserver/RequestHandlerFactory.h>
 #include <unistd.h>
 
-#include "EchoHandler.h"
-#include "EchoStats.h"
+#include "SearchHandler.h"
+#include "SearchStats.h"
 
-using namespace EchoService;
+using namespace SearchService;
 using namespace proxygen;
 using namespace std;
 
@@ -35,11 +35,11 @@ DEFINE_string(ip, "localhost", "IP/Hostname to bind to");
 DEFINE_int32(threads, 0, "Number of threads to listen on. Numbers <= 0 "
              "will use the number of cores on this machine.");
 
-class EchoHandlerFactory : public RequestHandlerFactory {
+class SearchHandlerFactory : public RequestHandlerFactory {
 
  public:
   void onServerStart(folly::EventBase* evb) noexcept override {
-    stats_.reset(new EchoStats);
+    stats_.reset(new SearchStats);
   }
 
   void onServerStop() noexcept override {
@@ -47,12 +47,12 @@ class EchoHandlerFactory : public RequestHandlerFactory {
   }
 
   RequestHandler* onRequest(RequestHandler*, HTTPMessage*) noexcept override {
-    cout << "Got Request" << endl;
-    return new EchoHandler(stats_.get());
+    cout << "Got Search Request" << endl;
+    return new SearchHandler(stats_.get());
   }
 
  private:
-  folly::ThreadLocalPtr<EchoStats> stats_;
+  folly::ThreadLocalPtr<SearchStats> stats_;
 
 };
 
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
   google::InstallFailureSignalHandler();
-
+  std::cout << FLAGS_ip << "\t" <<  FLAGS_http_port << std::endl;
   std::vector<HTTPServer::IPConfig> IPs = {
     {SocketAddress(FLAGS_ip, FLAGS_http_port, true), Protocol::HTTP},
     {SocketAddress(FLAGS_ip, FLAGS_spdy_port, true), Protocol::SPDY},
@@ -69,6 +69,7 @@ int main(int argc, char* argv[]) {
 
   if (FLAGS_threads <= 0) {
     FLAGS_threads = sysconf(_SC_NPROCESSORS_ONLN);
+    std::cout << "Threads \t " << FLAGS_threads << std::endl;
     CHECK(FLAGS_threads > 0);
   }
 
@@ -77,9 +78,7 @@ int main(int argc, char* argv[]) {
   options.idleTimeout = std::chrono::milliseconds(60000);
   options.shutdownOn = {SIGINT, SIGTERM};
   options.enableContentCompression = false;
-  options.handlerFactories = RequestHandlerChain()
-      .addThen<EchoHandlerFactory>()
-      .build();
+  options.handlerFactories = RequestHandlerChain().addThen<SearchHandlerFactory>().build();
 
   HTTPServer server(std::move(options));
   server.bind(IPs);

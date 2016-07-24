@@ -13,19 +13,20 @@
 #include <proxygen/httpserver/RequestHandler.h>
 
 namespace proxygen {
-class ResponseHandler;
+
+    class ResponseHandler;
+
 }
 
-namespace EchoService {
+namespace SearchService {
 
-class EchoStats;
+class SearchStats;
 
-class EchoHandler : public proxygen::RequestHandler {
+class SearchHandler : public proxygen::RequestHandler {
  public:
-  explicit EchoHandler(EchoStats* stats);
+  explicit SearchHandler(SearchStats* stats);
 
-  void onRequest(std::unique_ptr<proxygen::HTTPMessage> headers)
-      noexcept override;
+  void onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
 
   void onBody(std::unique_ptr<folly::IOBuf> body) noexcept override;
 
@@ -38,7 +39,7 @@ class EchoHandler : public proxygen::RequestHandler {
   void onError(proxygen::ProxygenError err) noexcept override;
 
  private:
-  EchoStats* const stats_{nullptr};
+  SearchStats* const stats_{nullptr};
 
   std::unique_ptr<folly::IOBuf> body_;
 };
