@@ -18,40 +18,40 @@ using namespace proxygen;
 
 namespace SearchService {
 
-    SearchHandler::SearchHandler(SearchStats* stats): stats_(stats) {
-}
+    SearchHandler::SearchHandler(SearchStats *stats) : stats_(stats) {
+    }
 
-void SearchHandler::onRequest(std::unique_ptr<HTTPMessage> headers) noexcept {
-  stats_->recordRequest();
-}
+    void SearchHandler::onRequest(std::unique_ptr<HTTPMessage> headers) noexcept {
+        stats_->recordRequest();
+    }
 
-void SearchHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
-  if (body_) {
-    body_->prependChain(std::move(body));
-  } else {
-    body_ = std::move(body);
-  }
-}
+    void SearchHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
+        if (body_) {
+            body_->prependChain(std::move(body));
+        } else {
+            body_ = std::move(body);
+        }
+    }
 
-void SearchHandler::onEOM() noexcept {
-  ResponseBuilder(downstream_)
-    .status(200, "OK")
-    .header("Request-Number",
-            folly::to<std::string>(stats_->getRequestCount()))
-    .body(std::move(body_))
-    .sendWithEOM();
-}
+    void SearchHandler::onEOM() noexcept {
+        ResponseBuilder(downstream_)
+                .status(200, "OK")
+                .header("Request-Number",
+                        folly::to<std::string>(stats_->getRequestCount()))
+                .body(std::move(body_))
+                .sendWithEOM();
+    }
 
-void SearchHandler::onUpgrade(UpgradeProtocol protocol) noexcept {
-  // handler doesn't support upgrades
-}
+    void SearchHandler::onUpgrade(UpgradeProtocol protocol) noexcept {
+        // handler doesn't support upgrades
+    }
 
-void SearchHandler::requestComplete() noexcept {
-  delete this;
-}
+    void SearchHandler::requestComplete() noexcept {
+        delete this;
+    }
 
-void SearchHandler::onError(ProxygenError err) noexcept {
-  delete this;
-}
+    void SearchHandler::onError(ProxygenError err) noexcept {
+        delete this;
+    }
 
 }

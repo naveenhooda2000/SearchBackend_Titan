@@ -16,29 +16,29 @@ namespace SearchService {
  * one instance of this in each class, there is no need of
  * synchronization
  */
-class SearchStats {
- public:
-  virtual ~SearchStats() {
+    class SearchStats {
+    public:
+        virtual ~SearchStats() {
 
-  }
+        }
 
-  // NOTE: We make the following methods `virtual` so that we can
-  //       mock them using Gmock for our C++ unit-tests. SearchStats
-  //       is an external dependency to handler and we should be
-  //       able to mock it.
+        // NOTE: We make the following methods `virtual` so that we can
+        //       mock them using Gmock for our C++ unit-tests. SearchStats
+        //       is an external dependency to handler and we should be
+        //       able to mock it.
 
-  virtual void recordRequest() {
-    std::cout << " recording request " << reqCount_ << std::endl;
-    ++reqCount_;
-    std::cout << "icremented recording request " << reqCount_ << std::endl;
-  }
+        virtual void recordRequest() {
+            std::cout << " recording request " << reqCount_ << std::endl;
+            ++reqCount_;
+            std::cout << "icremented recording request " << reqCount_ << std::endl;
+        }
 
-  virtual uint64_t getRequestCount() {
-    return reqCount_;
-  }
+        virtual uint64_t getRequestCount() {
+            return reqCount_;
+        }
 
- private:
-  uint64_t reqCount_{0};
-};
+    private:
+        uint64_t reqCount_{0};
+    };
 
 }
