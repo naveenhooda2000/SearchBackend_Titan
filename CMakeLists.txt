@@ -25,4 +25,8 @@ find_library(GFLAGS_LIBRARY_PATH gflags)
 find_library(Wangle REQUIRED)
 find_library(Proxygen REQUIRED)
 
+add_subdirectory(search-common)
+add_subdirectory(query-rewrite-engine)
+add_subdirectory(document-ranking)
 add_subdirectory(server-engine)
+add_subdirectory(response-aggregator)

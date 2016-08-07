@@ -12,10 +12,10 @@
 #include <folly/io/async/EventBaseManager.h>
 #include <proxygen/httpserver/HTTPServer.h>
 
-#include "SearchHandler.h"
-#include "SearchStats.h"
+#include "AggregatorHandler.h"
+#include "AggregatorStats.h"
 
-using namespace SearchService;
+using namespace AggregatorService;
 using namespace proxygen;
 using namespace std;
 
@@ -25,15 +25,15 @@ using folly::SocketAddress;
 
 using Protocol = HTTPServer::Protocol;
 
-DEFINE_int32(http_port, 11000, "Port to listen on with HTTP protocol");
+DEFINE_int32(http_port, 21000, "Port to listen on with HTTP protocol");
 DEFINE_string(ip, "localhost", "IP/Hostname to bind to");
 DEFINE_int32(threads, 0, "Number of threads to listen on. Numbers <= 0 will use the number of cores on this machine.");
 
-class SearchHandlerFactory : public RequestHandlerFactory {
+class AggregatorHandlerFactory : public RequestHandlerFactory {
 
 public:
     void onServerStart(folly::EventBase *evb) noexcept override {
-        stats_.reset(new SearchStats);
+        stats_.reset(new AggregatorStats);
     }
 
     void onServerStop() noexcept override {
@@ -42,11 +42,11 @@ public:
 
     RequestHandler *onRequest(RequestHandler *, HTTPMessage *) noexcept override {
         cout << "Got Search Request" << endl;
-        return new SearchHandler(stats_.get());
+        return new AggregatorHandler(stats_.get());
     }
 
 private:
-    folly::ThreadLocalPtr<SearchStats> stats_;
+    folly::ThreadLocalPtr<AggregatorStats> stats_;
 
 };
 
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
     options.idleTimeout = std::chrono::milliseconds(60000);
     options.shutdownOn = {SIGINT, SIGTERM};
     options.enableContentCompression = false;
-    options.handlerFactories = RequestHandlerChain().addThen<SearchHandlerFactory>().build();
+    options.handlerFactories = RequestHandlerChain().addThen<AggregatorHandlerFactory>().build();
 
     HTTPServer server(std::move(options));
     server.bind(IPs);

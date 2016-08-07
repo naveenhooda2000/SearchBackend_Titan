@@ -7,25 +7,27 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-#include "SearchHandler.h"
+
 
 #include <proxygen/httpserver/RequestHandler.h>
 #include <proxygen/httpserver/ResponseBuilder.h>
 
-#include "SearchStats.h"
+#include "AggregatorHandler.h"
+#include "AggregatorStats.h"
+
 
 using namespace proxygen;
 
-namespace SearchService {
+namespace AggregatorService {
 
-    SearchHandler::SearchHandler(SearchStats *stats) : stats_(stats) {
+    AggregatorHandler::AggregatorHandler(AggregatorStats *stats) : stats_(stats) {
     }
 
-    void SearchHandler::onRequest(std::unique_ptr<HTTPMessage> headers) noexcept {
+    void AggregatorHandler::onRequest(std::unique_ptr<HTTPMessage> headers) noexcept {
         stats_->recordRequest();
     }
 
-    void SearchHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
+    void AggregatorHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
         if (body_) {
             body_->prependChain(std::move(body));
         } else {
@@ -33,7 +35,7 @@ namespace SearchService {
         }
     }
 
-    void SearchHandler::onEOM() noexcept {
+    void AggregatorHandler::onEOM() noexcept {
         std::string body{"{ documentNo :  1, brands : [{brandId : 1}, {brandId : 2}]}\n"};
         ResponseBuilder(downstream_)
                 .status(200, "OK")
@@ -42,15 +44,15 @@ namespace SearchService {
                 .sendWithEOM();
     }
 
-    void SearchHandler::onUpgrade(UpgradeProtocol protocol) noexcept {
+    void AggregatorHandler::onUpgrade(UpgradeProtocol protocol) noexcept {
         // handler doesn't support upgrades
     }
 
-    void SearchHandler::requestComplete() noexcept {
+    void AggregatorHandler::requestComplete() noexcept {
         delete this;
     }
 
-    void SearchHandler::onError(ProxygenError err) noexcept {
+    void AggregatorHandler::onError(ProxygenError err) noexcept {
         delete this;
     }
 
